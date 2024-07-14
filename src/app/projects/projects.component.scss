@@ -1,0 +1,41 @@
+:host {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tabs-container {
+  overflow: auto;
+}
+
+.nz-tabset  {
+  background-color: white;
+}
+
+.tab-content {
+  padding: 0 16px;
+
+  button {
+    margin-bottom: 16px;
+  }
+}
+
+thead {
+  background-color: #1890ff;
+  color: white;
+
+  th {
+    padding: 10px;
+  }
+}
+
+tbody {
+  tr:nth-child(even) {
+    background-color: whitesmoke;
+  }
+
+  td {
+    padding: 10px;
+  }
+}

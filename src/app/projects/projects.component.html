@@ -1,0 +1,97 @@
+@if (type() === 'workbench') {
+  <ng-container *ngTemplateOutlet="tabs"></ng-container>
+}
+
+<ng-template #tabs>
+  <div class="tabs-container" role="tablist">
+    <nz-tabset nzType="card" [nzSelectedIndex]="tab()">
+      <nz-tab>
+        <a *nzTabLink nz-tab-link [routerLink]="['../development']" aria-controls="development-tab">{{tabTitle[0]}}</a>
+        <div class="tab-content" id="development-tab" role="tabpanel" aria-labelledby="development-tab-link">
+          <button i18n nz-button nzType="primary" (click)="addModal()" aria-label="Add new item">Add</button>
+          <ng-container *ngTemplateOutlet="modelTable"></ng-container>
+        </div>
+      </nz-tab>
+      <nz-tab>
+        <a *nzTabLink nz-tab-link [routerLink]="['../validation']" aria-controls="validation-tab">{{tabTitle[1]}}</a>
+        <div class="tab-content" id="validation-tab" role="tabpanel" aria-labelledby="validation-tab-link">
+          <ng-container *ngTemplateOutlet="modelTable"></ng-container>
+        </div>
+      </nz-tab>
+    </nz-tabset>
+  </div>
+</ng-template>
+
+<ng-template #modelTable>
+  <nz-table [nzData]="listOfData()"
+            [nzPageSize]="pageSize"
+            [(nzPageIndex)]="pageIndex"
+            (nzCurrentPageDataChange)="updateCurrentPage($event)">
+    <thead>
+      <tr>
+        @for(column of columns; track column) {
+          <th scope="col" nzWidth="20%">{{column}}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (data of listOfCurrentPageData(); track data.id) {
+        <tr>
+          <td nzCellControl="name">{{ data.name }}</td>
+          <td nzCellControl="code">{{ data.code }}</td>
+          <td nzCellControl="description" nzBreakWord>{{ data.description }}</td>
+          <td nzCellControl="created">{{ data.created | date : 'yyyy-MM-dd HH:mm:ss' }}</td>
+          <td nzCellControl="action">
+            <a i18n (click)="editModal(data)" [attr.aria-label]="'Edit ' + data.name">Edit</a>
+            <nz-divider nzType="vertical" role="separator" aria-orientation="vertical"></nz-divider>
+            <a i18n [attr.aria-label]="'View members of ' + data.name">Members</a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+</ng-template>
+
+<nz-modal nzWidth="50vw"
+          [(nzVisible)]="isVisible"
+          [nzTitle]="modalAction"
+          [nzContent]="modalContent"
+          [nzFooter]="modalFooter"
+          (nzOnCancel)="closeModal()" (nzOnOk)="closeModal()">
+  <ng-template #modalContent>
+    <form nz-form [formGroup]="form" nzLayout="horizontal">
+      <nz-form-item>
+        <nz-form-label i18n [nzSpan]="7" nzFor="projectType">Project Type</nz-form-label>
+        <nz-form-control [nzSpan]="12">
+          <input nz-input formControlName="type" id="projectType" aria-describedby="projectTypeDesc"/>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label i18n nzRequired nzFor="name" nzSpan="7">Name</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback>
+          <input formControlName="name" nz-input id="name" aria-required="true" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label i18n nzRequired nzFor="code" nzSpan="7">Code</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback>
+          <input formControlName="code" nz-input id="code" aria-required="true" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label i18n nzFor="description" nzSpan="7">Description</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback>
+          <textarea nz-input formControlName="description" id="description" [nzAutosize]="{ minRows: 3, maxRows: 5 }" aria-required="true"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-template>
+
+  <ng-template #modalFooter let-ref="modalRef">
+    <button i18n nz-button (click)="ref.destroy()">Cancel</button>
+    <button i18n nz-button nzType="primary" (click)="submitForm(ref)">Confirm</button>
+  </ng-template>
+</nz-modal>

@@ -1,0 +1,50 @@
+<nz-layout>
+  <nz-header nzTheme="dark" class="ant-flex">
+    <div class="logo">
+      <span nz-icon nzType="rdc-logo" class="logo-icon"></span>
+      <span
+        aria-label="Toggle Menu"
+        class="trigger hamburger-icon"
+        nz-icon
+        [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+        (click)="isCollapsed = !isCollapsed"
+      ></span>
+    </div>
+    <div class="header" nzTheme="dark">
+      <div class="user"></div>
+      <div class="platform-name">RDC Platform</div>
+      <div class="user">User 1</div>
+    </div>
+  </nz-header>
+  <nz-layout>
+    <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+      <div class="logo"></div>
+      <ul nz-menu nzTheme="dark" nzMode="inline" aria-label="Main Navigation">
+        @for(nav of SideNav; track nav) {
+          @if (nav.subMenu) {
+            <li nz-submenu [nzTitle]="nav.title" [routerLink]="nav.path" [nzIcon]="nav.icon" [attr.aria-label]="nav.label">
+              @for(subMenu of nav.subMenu; track subMenu) {
+                <ul nz-submenu [nzTitle]="subMenu.title" [attr.aria-label]="subMenu.label">
+                  @for(item of subMenu.menuItem; track item) {
+                    <li nz-menu-item [routerLink]="item.path" [nzMatchRouter]="true" [attr.aria-label]="item.label">{{item.title}}</li>
+                  }
+                </ul>
+              }
+            </li>
+          } @else {
+            <li nz-menu-item [routerLink]="nav.path" [attr.aria-label]="nav.label">
+              <span nz-icon [nzType]="nav.icon"></span>
+              <span>{{nav.title}}</span>
+            </li>
+          }
+        }
+      </ul>
+    </nz-sider>
+    <nz-layout>
+      <nz-breadcrumb nzSeparator=">" [nzAutoGenerate]="true" aria-label="Breadcrumb"></nz-breadcrumb>
+      <nz-content>
+        <router-outlet></router-outlet>
+      </nz-content>
+    </nz-layout>
+  </nz-layout>
+</nz-layout>
